@@ -1,0 +1,13 @@
+{
+  "name": "node-fundamentals",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "This repository is dedicated to hosting the Rocketseat challenge, the 'Node Fundamentals Project'.",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "node --watch ./src/server.js"
+  },
+  "keywords": ["node", "RESTApi", "fundamentals", "node-vanilla"],
+  "author": "Caique Moreira",
+  "license": "ISC"
+}
