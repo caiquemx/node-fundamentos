@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises';
 const databasePath = new URL('db.json', import.meta.url);
 
-export class Database {
+export default class Database {
   #base_path = databasePath;
 
   #database = {};
@@ -33,14 +33,16 @@ export class Database {
       return this.#database[table];
     }
     const data = this.#database[table].filter((data) => data.id == id);
+    console.log({ data });
 
     if (data.length <= 0) {
-      return this.#database[table];
+      throw Error('Invalid Request ID');
     }
+    return this.#database[table];
   }
 
   #isValidPayload(payload) {
-    const requiredKeys = ['name', 'email'];
+    const requiredKeys = ['title', 'created_at'];
     const reqBodyKeys = Object.keys(payload);
 
     if (!Object.values(payload).every((value) => typeof value == 'string')) {
