@@ -1,13 +1,18 @@
 import http from 'node:http';
 import { routes } from './routes/routes.js';
+import { jsonBuffer } from './middleware/jsonBuffer.js';
 
 const PORT = 3000;
 const BASE_URL = `http://localhost:${PORT}`;
 
 const server = http.createServer(async (req, res) => {
   const { url, method } = req;
+
+  // middleware responsable to build req body
+  await jsonBuffer(req, res);
+
   const route = routes.find((route) => route.method == method && route.path == url);
-  console.log(url, method);
+
   if (route) {
     return route.handler(req, res);
   }
