@@ -21,10 +21,7 @@ export default class Database {
       throw Error('Invalid Request Data');
     }
 
-    this.#isValidPayload(payload);
-
     this.#database[table].push(payload);
-
     this.#persist();
   }
 
@@ -33,7 +30,6 @@ export default class Database {
       return this.#database[table];
     }
     const data = this.#database[table].filter((data) => data.id == id);
-    console.log({ data });
 
     if (data.length <= 0) {
       throw Error('Invalid Request ID');
@@ -41,8 +37,8 @@ export default class Database {
     return this.#database[table];
   }
 
-  #isValidPayload(payload) {
-    const requiredKeys = ['title', 'created_at'];
+  isValidPayload(payload) {
+    const requiredKeys = ['title', 'description'];
     const reqBodyKeys = Object.keys(payload);
 
     if (!Object.values(payload).every((value) => typeof value == 'string')) {
@@ -53,7 +49,7 @@ export default class Database {
       throw Error('Invalid Request Body');
     }
 
-    if (!requiredKeys.some((key) => reqBodyKeys.includes(key))) {
+    if (!requiredKeys.every((key) => reqBodyKeys.includes(key))) {
       throw Error('Invalid Request Body');
     }
   }
