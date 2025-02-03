@@ -48,13 +48,26 @@ export const routes = [
       const data = { description: '', ...req.body };
 
       try {
-        database.isValidPayload(data);
+        database.isValidPayload(data, req.method);
         database.insert('task', { ...task, ...data });
+        return res.writeHead(201).end();
       } catch (error) {
         return res.writeHead(400).end(error.message);
       }
-
-      return res.writeHead(201).end();
+    },
+  },
+  {
+    method: 'PUT',
+    path: buildRoutePath('/task/:id'),
+    handler: async (req, res) => {
+      const { id } = req.params;
+      try {
+        database.isValidPayload(req.body, req.method);
+        database.update('task', id, req.body);
+        return res.writeHead(204).end();
+      } catch (error) {
+        return res.writeHead(400).end(error.message);
+      }
     },
   },
 ];
