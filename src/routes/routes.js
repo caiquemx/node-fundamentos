@@ -9,8 +9,26 @@ export const routes = [
     method: 'GET',
     path: buildRoutePath('/task'),
     handler: async function (req, res) {
-      // const { id } = req.params;
-      const data = await database.select('task');
+      let title = '';
+      let description = '';
+
+      if (req.query) {
+        title = req.query.title ?? '';
+        description = req.query.description ?? '';
+      }
+
+      const tasks = await database.select('task');
+      let data = tasks;
+
+      if (title || description) {
+        data = tasks.filter((task) =>
+          title
+            ? task.title.includes(title)
+            : false || description
+            ? task.description.includes(description)
+            : false
+        );
+      }
       return res.writeHead(200).end(JSON.stringify(data));
     },
   },
