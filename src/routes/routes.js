@@ -83,4 +83,17 @@ export const routes = [
       }
     },
   },
+  {
+    method: 'PATCH',
+    path: buildRoutePath('/task/:id/complete'),
+    handler: async (req, res) => {
+      const { id } = req.params;
+      try {
+        database.updateTaskCompletion('task', id);
+        res.writeHead(204).end();
+      } catch (error) {
+        res.writeHead(404).end(error.message);
+      }
+    },
+  },
 ];
