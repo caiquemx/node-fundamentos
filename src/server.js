@@ -1,6 +1,7 @@
 import http from 'node:http';
 import { routes } from './routes/routes.js';
 import { jsonBuffer } from './middleware/jsonBuffer.js';
+import { buildQueryParams } from './utils/build-query-params.js';
 
 const PORT = 3000;
 const BASE_URL = `http://localhost:${PORT}`;
@@ -17,10 +18,10 @@ const server = http.createServer(async (req, res) => {
     const routeParams = url.match(route.path);
 
     req.params = { ...routeParams.groups };
+    req.query = buildQueryParams(url);
 
     return route.handler(req, res);
   }
-
   return res.writeHead(500).end();
 });
 

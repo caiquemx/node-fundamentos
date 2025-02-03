@@ -7,7 +7,7 @@ const database = new Database();
 export const routes = [
   {
     method: 'GET',
-    path: buildRoutePath('/task/:id'),
+    path: buildRoutePath('/task'),
     handler: async function (req, res) {
       // const { id } = req.params;
       const data = await database.select('task');
