@@ -1,8 +1,9 @@
 import fs from 'node:fs/promises';
-const databasePath = new URL('db.json', import.meta.url);
+const DATABASE_PATH = new URL('db.json', import.meta.url);
+const DEFAULT_ERROR_MESSAGE = 'Invalid Request Body';
 
 export default class Database {
-  #base_path = databasePath;
+  #base_path = DATABASE_PATH;
 
   #database = {};
 
@@ -37,20 +38,50 @@ export default class Database {
     return this.#database[table];
   }
 
-  isValidPayload(payload) {
+  update(table, id, payload) {
+    if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
+      throw Error('Invalid Request Data');
+    }
+
+    const taskIndex = this.#database[table].findIndex((task) => task.id == id);
+
+    if (taskIndex == -1) {
+      throw Error('Invalid Request Data');
+    }
+
+    this.#database[table][taskIndex] = {
+      ...this.#database[table][taskIndex],
+      ...payload,
+      updated_at: new Date(),
+    };
+
+    this.#persist();
+  }
+
+  isValidPayload(payload, method) {
     const requiredKeys = ['title', 'description'];
     const reqBodyKeys = Object.keys(payload);
+    const reqBodyValues = Object.values(payload);
 
-    if (!Object.values(payload).every((value) => typeof value == 'string')) {
-      throw Error('Invalid Request Values');
+    if (method == 'POST') {
+      if (reqBodyKeys.length > 2) {
+        throw Error(DEFAULT_ERROR_MESSAGE);
+      }
+      if (!payload.title || payload.title.length <= 0) {
+        throw Error(DEFAULT_ERROR_MESSAGE);
+      }
     }
 
-    if (reqBodyKeys.length > 2) {
-      throw Error('Invalid Request Body');
+    if (!reqBodyValues.every((value) => typeof value == 'string')) {
+      throw Error(DEFAULT_ERROR_MESSAGE);
     }
 
-    if (!requiredKeys.every((key) => reqBodyKeys.includes(key))) {
-      throw Error('Invalid Request Body');
+    if (reqBodyKeys.length <= 0) {
+      throw Error(DEFAULT_ERROR_MESSAGE);
+    }
+
+    if (!reqBodyKeys.every((key) => requiredKeys.includes(key))) {
+      throw Error(DEFAULT_ERROR_MESSAGE);
     }
   }
 
