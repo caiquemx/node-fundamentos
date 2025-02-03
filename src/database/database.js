@@ -74,6 +74,24 @@ export default class Database {
     this.#persist();
   }
 
+  updateTaskCompletion(table, id) {
+    const taskIndex = this.#database[table].findIndex((task) => task.id == id);
+
+    if (taskIndex == -1) {
+      throw Error(INVALID_PARAMETERS_ERROR_MESSAGE);
+    }
+
+    const isCompleted = this.#database[table][taskIndex].completed_at;
+
+    if (isCompleted) {
+      this.#database[table][taskIndex].completed_at = null;
+    } else {
+      this.#database[table][taskIndex].completed_at = new Date();
+    }
+
+    this.#persist();
+  }
+
   isValidPayload(payload, method) {
     const requiredKeys = ['title', 'description'];
     const reqBodyKeys = Object.keys(payload);
