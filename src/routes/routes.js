@@ -70,4 +70,17 @@ export const routes = [
       }
     },
   },
+  {
+    method: 'DELETE',
+    path: buildRoutePath('/task/:id'),
+    handler: async (req, res) => {
+      const { id } = req.params;
+      try {
+        database.delete('task', id, req.body);
+        return res.writeHead(204).end();
+      } catch (error) {
+        return res.writeHead(400).end(error.message);
+      }
+    },
+  },
 ];
