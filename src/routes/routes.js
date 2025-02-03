@@ -1,12 +1,13 @@
 import Database from '../database/Database.js';
 import { randomUUID } from 'node:crypto';
+import { buildRoutePath } from '../utils/build-route-params.js';
 
 const database = new Database();
 
 export const routes = [
   {
     method: 'GET',
-    path: '/task',
+    path: buildRoutePath('/task/:id'),
     handler: async function (req, res) {
       // const { id } = req.params;
       const data = await database.select('task');
@@ -15,7 +16,7 @@ export const routes = [
   },
   {
     method: 'POST',
-    path: '/task',
+    path: buildRoutePath('/task'),
     handler: async function (req, res) {
       const task = {
         id: randomUUID(),

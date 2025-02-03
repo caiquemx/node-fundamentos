@@ -11,9 +11,13 @@ const server = http.createServer(async (req, res) => {
   // middleware responsable to build req body
   await jsonBuffer(req, res);
 
-  const route = routes.find((route) => route.method == method && route.path == url);
+  const route = routes.find((route) => route.method == method && route.path.test(url));
 
   if (route) {
+    const routeParams = url.match(route.path);
+
+    req.params = { ...routeParams.groups };
+
     return route.handler(req, res);
   }
 
