@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises';
 const DATABASE_PATH = new URL('db.json', import.meta.url);
 const DEFAULT_ERROR_MESSAGE = 'Invalid Request Body';
+const INVALID_PARAMETERS_ERROR_MESSAGE = 'Invalid Request Parameters';
 
 export default class Database {
   #base_path = DATABASE_PATH;
@@ -19,7 +20,7 @@ export default class Database {
     }
 
     if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
-      throw Error('Invalid Request Data');
+      throw Error(DEFAULT_ERROR_MESSAGE);
     }
 
     this.#database[table].push(payload);
@@ -33,20 +34,20 @@ export default class Database {
     const data = this.#database[table].filter((data) => data.id == id);
 
     if (data.length <= 0) {
-      throw Error('Invalid Request ID');
+      throw Error(INVALID_PARAMETERS_ERROR_MESSAGE);
     }
     return this.#database[table];
   }
 
   update(table, id, payload) {
     if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
-      throw Error('Invalid Request Data');
+      throw Error(DEFAULT_ERROR_MESSAGE);
     }
 
     const taskIndex = this.#database[table].findIndex((task) => task.id == id);
 
     if (taskIndex == -1) {
-      throw Error('Invalid Request Data');
+      throw Error(INVALID_PARAMETERS_ERROR_MESSAGE);
     }
 
     this.#database[table][taskIndex] = {
@@ -55,6 +56,21 @@ export default class Database {
       updated_at: new Date(),
     };
 
+    this.#persist();
+  }
+
+  delete(table, id) {
+    const taskIndex = this.#database[table].findIndex((task) => task.id == id);
+
+    if (taskIndex == -1) {
+      throw Error(INVALID_PARAMETERS_ERROR_MESSAGE);
+    }
+
+    if (!id) {
+      throw Error(INVALID_PARAMETERS_ERROR_MESSAGE);
+    }
+
+    this.#database[table].splice(taskIndex, 1);
     this.#persist();
   }
 
