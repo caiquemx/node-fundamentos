@@ -26,7 +26,7 @@ This project is a simple CRUD API built using only Node.js and its built-in libr
 
 1. Clone this repository:
    ```sh
-   git clone https://github.com/your-username/your-repo-name.git
+   git clone https://git@github.com:caiquemx/node-fundamentos.git
    ```
 2. Navigate to the project directory:
    ```sh
